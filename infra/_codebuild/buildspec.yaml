@@ -1,0 +1,27 @@
+version: 0.2
+
+env:
+  shell: bash
+batch:
+  fast-fail: true
+phases:
+  install:
+    commands:
+      - apt update && apt install -y mingw-w64 curl
+      - apt -y install postgresql-client
+      - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      - source $HOME/.cargo/env
+      - cargo install --force sqlx-cli@0.7.3
+  pre_build:
+    commands:
+  build:
+    commands:
+      - export DATABASE_URL="postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}?user=${DATABASE_USERNAME}&password=${DATABASE_PASSWORD}"
+      # テーブルの作成を実行する。
+      - sqlx migrate run --source adapter/migrations
+      # 初期データの投入を実行する（不要な場合はコメントアウト）。
+      - psql ${DATABASE_URL} -f data/initial_setup.sql
+cache:
+  paths:
+    - ~/.cargo/registry
+    - ./target/**/*
