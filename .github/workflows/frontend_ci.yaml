@@ -1,0 +1,32 @@
+name: Frontend App Build and Tests
+on:
+  push:
+    branches: [main]
+    paths:
+      - "frontend/**"
+  pull_request:
+    paths:
+      - "frontend/**"
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build --if-present
+      - name: Lint
+        run: npm run lint
+      # The section would be working if we start using tests
+      # - name: Test
+      #   run: npm run test
