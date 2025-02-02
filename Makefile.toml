@@ -107,7 +107,7 @@ install_crate = { crate_name = "cargo-nextest", binary = "cargo", test_arg = [
 command = "cargo"
 args = [
   "nextest", "run", "--workspace",
-  "--status-level", "all", "--test-threads=1",
+  "--status-level", "all", "--test-threads=1", "--no-tests=pass"
 ]
 
 [tasks.clippy-ci]
